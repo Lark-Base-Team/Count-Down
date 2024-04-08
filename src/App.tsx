@@ -3,14 +3,15 @@ import React from 'react';
 import { dashboard } from "@lark-base-open/js-sdk";
 import { Button, DatePicker } from '@douyinfe/semi-ui';
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 export default function App() {
     const [target, setTarget] = useState<number>(0);
     const initialTime = React.useMemo(() => {
         return Math.floor((target - Date.now()) / 1000);
     }, [target]);
-    const url = new URL(window.location.href);
-    const isConfig = !!url.searchParams.get('isConfig');
+    const [searchParams] = useSearchParams();
+    const isConfig = searchParams.get('isConfig');
 
     React.useEffect(() => {
         dashboard.getConfig().then(res => {

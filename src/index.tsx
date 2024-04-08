@@ -2,14 +2,19 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import {
-    createBrowserRouter,
+    createHashRouter,
     RouterProvider,
   } from "react-router-dom";
+import Chart from './Chart';
 
-const router = createBrowserRouter([
+const router = createHashRouter([
     {
       path: '/',
       element: <App></App>
+    },
+    {
+      path: '/chart',
+      element: <Chart></Chart>
     }
   ])
 

@@ -2,11 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { IData, IDataCondition, dashboard, bitable, IConfig, SourceType, FilterOperator, GroupMode, DATA_SOURCE_SORT_TYPE, FilterConjunction, FieldType } from "@lark-base-open/js-sdk";
 import { Button, Form, Select, Space } from '@douyinfe/semi-ui';
 import { BaseFormApi } from '@douyinfe/semi-foundation/lib/es/form/interface';
+import { useSearchParams } from 'react-router-dom';
 
 export default function Chart() {
     const api = useRef<BaseFormApi>();
-    const url = new URL(window.location.href);
-    const isConfig = !!url.searchParams.get('isConfig');
+    const [searchParams] = useSearchParams();
+    const isConfig = searchParams.get('isConfig');
     const [state, setState] = useState<IData>();
     const [dataSources, setDataSources] = useState<{ name: string; id: string }[]>([]);
     const [fieldList, setFieldList] = useState<{ name: string; id: string }[]>([]);
