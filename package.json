@@ -1,0 +1,33 @@
+{
+  "name": "react-emplate",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "React TypeScript on Replit, using Vite bundler",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react": "^18.0.15",
+    "@types/react-dom": "^18.0.6",
+    "@vitejs/plugin-react": "^2.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^4.7.4",
+    "vite": "^3.0.4"
+  },
+  "dependencies": {
+    "@douyinfe/semi-foundation": "^2.38.0",
+    "@douyinfe/semi-ui": "^2.36.0",
+    "@lark-base-open/js-sdk": "https://lf3-static.bytednsdoc.com/obj/eden-cn/jjjpceh7nulojvhj/@lark-base-open-js-sdk-0.4.0-alpha.1.tgz",
+    "i18next": "^23.5.1",
+    "i18next-browser-languagedetector": "^7.1.0",
+    "react-i18next": "^13.2.2",
+    "react-router-dom": "^6.22.3",
+    "reset-css": "^5.0.1"
+  }
+}
