@@ -8,7 +8,6 @@ export default function Chart() {
     const url = new URL(window.location.href);
     const isConfig = !!url.searchParams.get('isConfig');
     const [state, setState] = useState<IData>();
-    const [dataCondition, setDataCondition] = useState<IDataCondition>();
     const [dataSources, setDataSources] = useState<{ name: string; id: string }[]>([]);
     const [fieldList, setFieldList] = useState<{ name: string; id: string }[]>([]);
 
@@ -20,7 +19,6 @@ export default function Chart() {
                 console.log("🚀 ~ dashboard.getConfig ~ config:", config)
                 if (Array.isArray(config.dataConditions) && config.dataConditions?.[0]) {
                     const dataCondition = config.dataConditions?.[0];
-                    setDataCondition(dataCondition)
                     const table = await bitable.base.getTableById(dataCondition.tableId);
                     const fieldList = await table.getFieldList();
                     const fieldOptionList = await Promise.all(
