@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { IData, IDataCondition, dashboard, bitable, IConfig, SourceType, FilterOperator, GroupMode, DATA_SOURCE_SORT_TYPE, FilterConjunction, FieldType } from "@lark-base-open/js-sdk";
 import { Button, Form, Select, Space } from '@douyinfe/semi-ui';
 import { BaseFormApi } from '@douyinfe/semi-foundation/lib/es/form/interface';
@@ -11,48 +11,59 @@ export default function Chart() {
     const [dataSources, setDataSources] = useState<{ name: string; id: string }[]>([]);
     const [fieldList, setFieldList] = useState<{ name: string; id: string }[]>([]);
 
+    const updateFieldList = useCallback(async (tableId: string) => {
+        const table = await bitable.base.getTableById(tableId);
+        const fieldList = await table.getFieldList();
+        const fieldOptionList = await Promise.all(
+            fieldList.map(async field => {
+                const name = await field.getName();
+                const id = field.id;
+                return {
+                    name,
+                    id,
+                    type: await field.getType(),
+                }
+            })
+        );
+        console.log("🚀 ~ table.getFieldList ~ fieldList:", fieldOptionList)
+        setFieldList(fieldOptionList);
+        return fieldOptionList;
+    }, []);
+
     // 初始化配置页
     useEffect(() => {
         const init = async () => {
             if (isConfig && api.current?.setValues) {
                 const config = await dashboard.getConfig();
                 console.log("🚀 ~ dashboard.getConfig ~ config:", config)
+                let tableId
+                let condition
                 if (Array.isArray(config.dataConditions) && config.dataConditions?.[0]) {
                     const dataCondition = config.dataConditions?.[0];
-                    const table = await bitable.base.getTableById(dataCondition.tableId);
-                    const fieldList = await table.getFieldList();
-                    const fieldOptionList = await Promise.all(
-                        fieldList.map(async field => {
-                            const name = await field.getName();
-                            const id = field.id;
-                            return {
-                                name,
-                                id,
-                                type: await field.getType(),
-                            }
-                        })
-                    );
-                    console.log("🚀 ~ table.getFieldList ~ fieldList:", fieldOptionList)
-                    setFieldList(fieldOptionList);
-                    const condition = dataCondition.dataRange?.filterInfo?.conditions?.[0];
-                    // 已经有配置的情况
-                    if (condition && condition.fieldId) {
-                        const values = {
-                            dataSource: dataCondition.tableId,
-                            fieldId: condition.fieldId,
-                            operator: condition.operator,
-                            value: condition.value,
-                        };
-                        console.log("🚀 ~ table.getFieldList ~ values:", values)
-                        api.current?.setValues(values);
-                    } else {
-                        const firstTextField = fieldOptionList.find(field => field.name === '文本');
-                        api.current?.setValues({
-                            dataSource: dataCondition.tableId,
-                            fieldId: firstTextField?.id,
-                            operator: FilterOperator.Is,
-                        });
-                    }
+                    tableId = dataCondition.tableId;
+                    condition = dataCondition.dataRange?.filterInfo?.conditions?.[0];
+                } else {
+                    const tableList = await bitable.base.getTableList();
+                    tableId = tableList[0].id;
+                }
+                const fieldOptionList = await updateFieldList(tableId);
+                // 已经有配置的情况
+                if (condition && condition.fieldId) {
+                    const values = {
+                        dataSource: tableId,
+                        fieldId: condition.fieldId,
+                        operator: condition.operator,
+                        value: condition.value,
+                    };
+                    console.log("🚀 ~ table.getFieldList ~ values:", values)
+                    api.current?.setValues(values);
+                } else {
+                    const firstTextField = fieldOptionList.find(field => field.name === '文本');
+                    api.current?.setValues({
+                        dataSource: tableId,
+                        fieldId: firstTextField?.id,
+                        operator: FilterOperator.Is,
+                    });
                 }
             }
         }
@@ -169,6 +180,9 @@ export default function Chart() {
                                 field='dataSource'
                                 label={{
                                     text: '数据源'
+                                }}
+                                onChange={(value) => {
+                                    updateFieldList(value as string)
                                 }}
                             >
                                 {
