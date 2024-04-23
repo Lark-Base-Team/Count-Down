@@ -101,6 +101,7 @@ export default function Chart() {
             );
             console.log("🚀 ~ fetchDataSources ~ tables:", tables)
             setDataSources(tables);
+            dashboard.setRendered();
         }
         fetchDataSources();
         bitable.base.getTableList().then(tableList => {
