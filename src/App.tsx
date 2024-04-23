@@ -17,6 +17,10 @@ export default function App() {
             const { customConfig } = res;
             if (typeof customConfig?.target === 'number') {
                 setTarget(customConfig.target);
+                console.log('====渲染完毕')
+                setTimeout(() => {
+                    dashboard.setRendered();
+                }, 3000);
             }
         });
     }, []);
@@ -26,6 +30,10 @@ export default function App() {
                 const { customConfig } = res;
                 if (typeof customConfig?.target === 'number') {
                     setTarget(customConfig.target);
+                    console.log('====渲染完毕')
+                    setTimeout(() => {
+                        dashboard.setRendered();
+                    }, 3000);
                 }
             });
         });
