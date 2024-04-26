@@ -4,6 +4,7 @@
   "type": "module",
   "description": "React TypeScript on Replit, using Vite bundler",
   "scripts": {
+    "start": "vite",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"

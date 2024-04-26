@@ -6,6 +6,7 @@ import {
     RouterProvider,
   } from "react-router-dom";
 import Chart from './Chart';
+import Digit from './Digit';
 
 const router = createHashRouter([
     {
@@ -15,7 +16,11 @@ const router = createHashRouter([
     {
       path: '/chart',
       element: <Chart></Chart>
-    }
+    },
+    {
+      path: '/digit',
+      element: <Digit></Digit>
+    },
   ])
 
 const root = ReactDOM.createRoot(
