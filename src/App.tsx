@@ -74,7 +74,7 @@ export default function App() {
         othersConfig: defaultOthersConfig
     })
 
-
+    /** 是否配置模式下 */
     const isConfig = dashboard.state === DashboardState.Config;
 
 
@@ -99,6 +99,7 @@ export default function App() {
         if (customConfig) {
             setConfig(customConfig as any)
             setTimeout(() => {
+                // 预留3s给浏览器进行渲染，3s后告知服务端可以进行截图了
                 dashboard.setRendered();
             }, 3000);
         }
@@ -106,15 +107,15 @@ export default function App() {
     }
 
     React.useEffect(() => {
+        // 初始化获取配置
         dashboard.getConfig().then(updateConfig);
     }, []);
 
 
     React.useEffect(() => {
-        const offConfigChange = dashboard.onConfigChange(() => {
-            dashboard.getConfig().then((res) => {
-                updateConfig(res);
-            });
+        const offConfigChange = dashboard.onConfigChange((r) => {
+            // 监听配置变化，协同修改配置
+            updateConfig(r.data);
         });
         return () => {
             offConfigChange();
@@ -122,6 +123,7 @@ export default function App() {
     }, []);
 
     const onClick = () => {
+        // 保存配置
         dashboard.saveConfig({
             customConfig: config
         } as any)
@@ -137,7 +139,6 @@ export default function App() {
                         key={config.target}
                         config={config}
                         initialTime={0}
-
                     />
                 </div>
                 {
