@@ -74,8 +74,10 @@ export default function App() {
         othersConfig: defaultOthersConfig
     })
 
+    const url = new URL(window.location.href);
     /** 是否配置模式下 */
-    const isConfig = dashboard.state === DashboardState.Config;
+    const isConfig = dashboard.state === DashboardState.Config
+        || !!url.searchParams.get('isConfig');
 
 
     const onUnitChange = (checkedValues: string[]) => {
