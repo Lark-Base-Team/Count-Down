@@ -1,112 +1,225 @@
 import './App.css';
 import React from 'react';
-import { dashboard } from "@lark-base-open/js-sdk";
-import { Button, DatePicker } from '@douyinfe/semi-ui';
+import { dashboard, bitable, DashboardState } from "@lark-base-open/js-sdk";
+import { Button, DatePicker, ConfigProvider, Checkbox, Row, Col, GetProp, ColorPicker } from 'antd';
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { getTime } from './utils';
+import dayjs from 'dayjs';
+import enUS from 'antd/locale/en_US';
+import zhCN from 'antd/locale/zh_CN';
+
+interface ICountDownConfig {
+    color: string;
+    target: number;
+    units: string[];
+    othersConfig: string[],
+}
+
+const othersConfigKey = [{
+    key: 'showTitle',
+    title: '展示标题',
+}]
+
+const defaultOthersConfig = ['showTitle']
+
+import 'dayjs/locale/zh-cn';
+import 'dayjs/locale/en';
+
+dayjs.locale('zh-cn');
+
+const availableUnits: { [p: string]: { title: string, unit: number, order: number } } = {
+    sec: {
+        title: '秒',
+        unit: 1,
+        order: 1,
+    },
+    min: {
+        title: '分',
+        unit: 60,
+        order: 2,
+    },
+    hour: {
+        title: '小时',
+        unit: 60 * 60,
+        order: 3,
+    },
+    day: {
+        title: '天',
+        unit: 60 * 60 * 24,
+        order: 4,
+    },
+    week: {
+        title: '周',
+        unit: 60 * 60 * 24 * 7,
+        order: 5,
+    },
+    month: {
+        title: '月',
+        unit: 60 * 60 * 24 * 30,
+        order: 6,
+    },
+}
+
+const defaultUnits = ['sec', 'min', 'hour', 'day']
+
 
 export default function App() {
-    const [target, setTarget] = useState<number>(0);
-    const initialTime = React.useMemo(() => {
-        return Math.floor((target - Date.now()) / 1000);
-    }, [target]);
-    const url = new URL(window.location.href);
-    const isConfig = !!url.searchParams.get('isConfig');
+
+    const [locale, setLocale] = useState(zhCN);
+
+    const [config, setConfig] = useState<ICountDownConfig>({
+        target: dayjs().unix(),
+        color: '#373C43',
+        units: defaultUnits,
+        othersConfig: defaultOthersConfig
+    })
+
+
+    const isConfig = dashboard.state === DashboardState.Config;
+
+
+    const onUnitChange = (checkedValues: string[]) => {
+        setConfig({
+            ...config,
+            units: checkedValues,
+        })
+    };
+    const changeLang = (lang: 'en-us' | 'zh-cn') => {
+        if (lang === 'zh-cn') {
+            setLocale(zhCN);
+            dayjs.locale('zh-cn');
+        } else {
+            setLocale(enUS);
+            dayjs.locale('en-ud');
+        }
+    }
+
+    const updateConfig = (res: any) => {
+        const { customConfig } = res;
+        if (customConfig) {
+            setConfig(customConfig as any)
+            setTimeout(() => {
+                dashboard.setRendered();
+            }, 3000);
+        }
+
+    }
 
     React.useEffect(() => {
-        dashboard.getConfig().then(res => {
-            const { customConfig } = res;
-            if (typeof customConfig?.target === 'number') {
-                setTarget(customConfig.target);
-                console.log('====渲染完毕')
-                setTimeout(() => {
-                    dashboard.setRendered();
-                }, 3000);
-            }
-        });
+        dashboard.getConfig().then(updateConfig);
     }, []);
+
+
     React.useEffect(() => {
         const offConfigChange = dashboard.onConfigChange(() => {
-            dashboard.getConfig().then(res => {
-                const { customConfig } = res;
-                if (typeof customConfig?.target === 'number') {
-                    setTarget(customConfig.target);
-                    console.log('====渲染完毕')
-                    setTimeout(() => {
-                        dashboard.setRendered();
-                    }, 3000);
-                }
+            dashboard.getConfig().then((res) => {
+                updateConfig(res);
             });
         });
         return () => {
             offConfigChange();
         }
     }, []);
-    const onClick = React.useCallback(() => {
-        // @ts-ignore
+
+    const onClick = () => {
         dashboard.saveConfig({
-            customConfig: {
-                target,
-            }
-        })
-    }, [target]);
+            customConfig: config
+        } as any)
+    }
 
     return (
-        <main className="main" style={{
-            display: 'flex',
-        }}
-        >
-            <div className='content' style={{
-                flex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '100vh',
-                fontSize: 64,
-                minWidth: 0,
-            }}>
-                <Countdown
-                    key={target}
-                    target={target}
-                    initialTime={initialTime}
-                />
-            </div>
-            {
-                isConfig && (
-                    <div style={{
-                        width: '30%',
-                        flex: 'none',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        flexDirection: 'column',
-                    }}>
-                        <div>
-                            <p>修改日期和时间：</p>
-                            <DatePicker
-                                type="dateTime"
-                                style={{
-                                    width: '100%'
-                                }}
-                                onChange={(date) => {
-                                    setTarget(+(date as Date));
-                                }}
-                            />
+        <main className="main">
+
+            <ConfigProvider locale={locale}>
+
+                <div className='content'>
+                    <Countdown
+                        key={config.target}
+                        config={config}
+                        initialTime={0}
+
+                    />
+                </div>
+                {
+                    isConfig && (
+                        <div className='config-panel'>
+                            <div className='form'>
+                                <div className='form-item'>
+                                    <div className='label'>修改日期和时间：</div>
+                                    <DatePicker
+                                        showTime
+                                        value={dayjs.unix(config.target)}
+                                        onChange={(date) => {
+                                            setConfig({
+                                                ...config,
+                                                target: date.unix(),
+                                            })
+                                        }}
+                                    />
+                                </div>
+                                <div className='form-item'>
+                                    <div className='label'>单位</div>
+                                    <Checkbox.Group value={config.units} style={{ width: '100%' }} onChange={onUnitChange}>
+                                        <Row className='checkbox-group'>
+                                            {Object.keys(availableUnits).sort((a, b) => availableUnits[b].order - availableUnits[a].order).map((v) => (
+                                                <Col key={v} span={12}>
+                                                    <Checkbox value={v}>{availableUnits[v].title}</Checkbox>
+                                                </Col>))}
+                                        </Row>
+                                    </Checkbox.Group>
+
+                                </div>
+
+                                <div className='form-item'>
+                                    <div className='label'>颜色</div>
+                                    <ColorPicker value={config.color} onChange={(v) => {
+                                        setConfig({
+                                            ...config,
+                                            color: v.toHexString(),
+                                        })
+                                    }} />
+                                </div>
+
+                                <div className='form-item'>
+                                    <div className='label'>配置</div>
+                                    <Checkbox.Group value={config.othersConfig} style={{ width: '100%' }} onChange={(v) => {
+                                        setConfig({
+                                            ...config,
+                                            othersConfig: v.slice(),
+                                        })
+                                    }}>
+                                        <Row className='checkbox-group'>
+                                            {othersConfigKey.map((v) => (
+                                                <Col key={v.key} span={12}>
+                                                    <Checkbox value={v.key}>{v.title}</Checkbox>
+                                                </Col>))}
+                                        </Row>
+                                    </Checkbox.Group>
+                                </div>
+                            </div>
+
+                            <Button
+                                className='btn'
+                                size="middle"
+                                type="primary"
+                                onClick={onClick}
+                            >
+                                确定
+                            </Button>
                         </div>
-                        <Button
-                            size="large"
-                            type="primary"
-                            onClick={onClick}
-                        >
-                            确定
-                        </Button>
-                    </div>
-                )
-            }
+                    )
+                }
+            </ConfigProvider>
+
         </main>
     )
 }
 
-function Countdown({ initialTime, target }: { initialTime: number; target: number }) {
-    const [time, setTime] = useState(initialTime);
+
+
+function Countdown({ config, initialTime }: { config: ICountDownConfig, initialTime: number }) {
+    const { units, target, color } = config
+    const [time, setTime] = useState(target ?? 0);
     useEffect(() => {
         const timer = setInterval(() => {
             setTime(time => {
@@ -119,19 +232,11 @@ function Countdown({ initialTime, target }: { initialTime: number; target: numbe
         };
     }, []);
 
-    const formatTime = () => {
-        const hours = Math.floor(time / 3600);
-        const minutes = Math.floor((time - hours * 3600) / 60);
-        const seconds = time - hours * 3600 - minutes * 60;
-
-        const formatNumber = (num: number) => (num < 10 ? `0${num}` : num);
-
-        return `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(seconds)}`;
-    };
+    const timeCount = getTime({ target: target, units: units.map((v) => availableUnits[v]) })
 
 
 
-    if (time < 0) {
+    if (time <= 0) {
         return (
             <div style={{
                 fontSize: 26
@@ -143,23 +248,23 @@ function Countdown({ initialTime, target }: { initialTime: number; target: numbe
 
     return (
         <div style={{ width: '100vw', textAlign: 'center', overflow: 'hidden' }}>
-            <p style={{
-                fontSize: 14
-            }}>距离: {convertTimestamp(target)} 还有</p>
-            {formatTime()}
+
+            {config.othersConfig.includes('showTitle') ? <p className='count-down-title'>距离: {convertTimestamp(target * 1000)} 还有</p> : null}
+            <div className='number-container' style={{ color }}>
+                {timeCount.units.sort((a, b) => b.unit - a.unit).map(({ count, title }) => {
+                    return <div key={title}>
+                        <div className='number'>{count}</div>
+                        <div className='number-title'>{title} </div>
+                    </div>
+                })}
+            </div>
+
         </div>
     );
 }
 
 function convertTimestamp(timestamp: number) {
     const date = new Date(timestamp);
-    const year = date.getFullYear();
-    const month = ("0" + (date.getMonth() + 1)).slice(-2);
-    const day = ("0" + date.getDate()).slice(-2);
-    const hours = ("0" + date.getHours()).slice(-2);
-    const minutes = ("0" + date.getMinutes()).slice(-2);
-    const seconds = ("0" + date.getSeconds()).slice(-2);
-
-    return year + ":" + month + ":" + day + " " + hours + ":" + minutes + ":" + seconds;
+    return dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss')
 }
 

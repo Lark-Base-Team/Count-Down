@@ -1,1 +1,105 @@
-@import 'reset-css';
+@import "reset-css";
+html {
+    --text-title: rgba(31, 35, 41, 1);
+}
+
+.ant-btn-primary {
+    background-color: rgba(20, 86, 240, 1);
+}
+
+.main {
+    display: flex;
+    border-top: rgba(222, 224, 227, 1) 1px solid;
+    box-sizing: border-box;
+    height: 100vh;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+}
+
+.config-panel {
+    width: 340px;
+    flex: none;
+    display: flex;
+    justify-content: flex-start;
+    gap: 20px;
+    flex-direction: column;
+    border-left: rgba(222, 224, 227, 1) 1px solid;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.form {
+    flex-grow: 1;
+}
+
+.form-item {
+    margin-bottom: 16px;
+    color: var(--text-title);
+}
+
+.ant-picker {
+    width: 100%;
+}
+
+.checkbox-group {
+    row-gap: 8px;
+}
+
+.label {
+    padding-bottom: 8px;
+    font-family: PingFang SC;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    text-align: left;
+}
+
+.btn {
+    align-self: flex-end;
+}
+
+.number-container {
+    padding: 0 15px;
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    row-gap: 10px;
+}
+
+.number-container {
+    flex-wrap: wrap;
+    align-content: center;
+}
+
+.number-container div {
+    flex-shrink: 0;
+}
+
+.number {
+    font-family: DIN Alternate;
+    font-size: 20vmin;
+    font-weight: 700;
+    line-height: 1em;
+    text-align: center;
+}
+
+.number-title {
+    font-family: PingFang SC;
+    font-size: 4vmin;
+    font-weight: 500;
+    line-height: 26px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.count-down-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
