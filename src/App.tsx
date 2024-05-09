@@ -7,6 +7,7 @@ import { getTime } from './utils';
 import dayjs from 'dayjs';
 import enUS from 'antd/locale/en_US';
 import zhCN from 'antd/locale/zh_CN';
+import classnames from 'classnames'
 
 interface ICountDownConfig {
     color: string;
@@ -77,7 +78,7 @@ export default function App() {
     const url = new URL(window.location.href);
     /** 是否配置模式下 */
     const isConfig = dashboard.state === DashboardState.Config
-        || !!url.searchParams.get('isConfig');
+        || !!url.searchParams.get('isConfig') || dashboard.state === DashboardState.Create;
 
 
     const onUnitChange = (checkedValues: string[]) => {
@@ -132,7 +133,10 @@ export default function App() {
     }
 
     return (
-        <main className="main">
+        <main className={classnames({
+            'main-config': isConfig,
+            'main': true,
+        })}>
 
             <ConfigProvider locale={locale}>
 
@@ -141,6 +145,7 @@ export default function App() {
                         key={config.target}
                         config={config}
                         initialTime={0}
+                        isConfig={isConfig}
                     />
                 </div>
                 {
@@ -159,6 +164,23 @@ export default function App() {
                                             })
                                         }}
                                     />
+                                </div>
+
+
+                                <div className='form-item'>
+                                    <Checkbox.Group value={config.othersConfig} style={{ width: '100%' }} onChange={(v) => {
+                                        setConfig({
+                                            ...config,
+                                            othersConfig: v.slice(),
+                                        })
+                                    }}>
+                                        <Row className='checkbox-group'>
+                                            {othersConfigKey.map((v) => (
+                                                <Col key={v.key} span={12}>
+                                                    <Checkbox value={v.key}>{v.title}</Checkbox>
+                                                </Col>))}
+                                        </Row>
+                                    </Checkbox.Group>
                                 </div>
                                 <div className='form-item'>
                                     <div className='label'>单位</div>
@@ -183,22 +205,6 @@ export default function App() {
                                     }} />
                                 </div>
 
-                                <div className='form-item'>
-                                    <div className='label'>配置</div>
-                                    <Checkbox.Group value={config.othersConfig} style={{ width: '100%' }} onChange={(v) => {
-                                        setConfig({
-                                            ...config,
-                                            othersConfig: v.slice(),
-                                        })
-                                    }}>
-                                        <Row className='checkbox-group'>
-                                            {othersConfigKey.map((v) => (
-                                                <Col key={v.key} span={12}>
-                                                    <Checkbox value={v.key}>{v.title}</Checkbox>
-                                                </Col>))}
-                                        </Row>
-                                    </Checkbox.Group>
-                                </div>
                             </div>
 
                             <Button
@@ -220,7 +226,7 @@ export default function App() {
 
 
 
-function Countdown({ config, initialTime }: { config: ICountDownConfig, initialTime: number }) {
+function Countdown({ config, initialTime, isConfig }: { config: ICountDownConfig, initialTime: number, isConfig: boolean }) {
     const { units, target, color } = config
     const [time, setTime] = useState(target ?? 0);
     useEffect(() => {
@@ -252,7 +258,11 @@ function Countdown({ config, initialTime }: { config: ICountDownConfig, initialT
     return (
         <div style={{ width: '100vw', textAlign: 'center', overflow: 'hidden' }}>
 
-            {config.othersConfig.includes('showTitle') ? <p className='count-down-title'>距离: {convertTimestamp(target * 1000)} 还有</p> : null}
+            {config.othersConfig.includes('showTitle') ? <p className={classnames('count-down-title', {
+                'count-down-title-config': isConfig
+            })}>
+                距离: {convertTimestamp(target * 1000)} 还有
+            </p> : null}
             <div className='number-container' style={{ color }}>
                 {timeCount.units.sort((a, b) => b.unit - a.unit).map(({ count, title }) => {
                     return <div key={title}>

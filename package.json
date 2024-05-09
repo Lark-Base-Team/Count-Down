@@ -24,8 +24,9 @@
   "dependencies": {
     "@douyinfe/semi-foundation": "^2.38.0",
     "@douyinfe/semi-ui": "^2.36.0",
-    "@lark-base-open/js-sdk": "https://lf3-static.bytednsdoc.com/obj/eden-cn/jjjpceh7nulojvhj/@lark-base-open-js-sdk-0.4.0-alpha.5.tgz",
+    "@lark-base-open/js-sdk": "https://lf3-static.bytednsdoc.com/obj/eden-cn/jjjpceh7nulojvhj/@lark-base-open-js-sdk-0.4.0-alpha.7.tgz",
     "antd": "^5.16.5",
+    "classnames": "^2.5.1",
     "dayjs": "^1.11.11",
     "i18next": "^23.5.1",
     "i18next-browser-languagedetector": "^7.1.0",

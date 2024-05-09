@@ -9,9 +9,12 @@ html {
 
 .main {
     display: flex;
-    border-top: rgba(222, 224, 227, 1) 1px solid;
     box-sizing: border-box;
     height: 100vh;
+}
+
+.main-config {
+    border-top: rgba(222, 224, 227, 1) 1px solid;
 }
 
 .content {
@@ -67,7 +70,7 @@ html {
 .number-container {
     padding: 0 15px;
     display: flex;
-    gap: 30px;
+    gap: 28px;
     justify-content: center;
     row-gap: 10px;
 }
@@ -83,7 +86,7 @@ html {
 
 .number {
     font-family: DIN Alternate;
-    font-size: 20vmin;
+    font-size: 28vmin;
     font-weight: 700;
     line-height: 1em;
     text-align: center;
@@ -91,14 +94,18 @@ html {
 
 .number-title {
     font-family: PingFang SC;
-    font-size: 4vmin;
+    font-size: 6vmin;
     font-weight: 500;
     text-align: center;
     margin-top: 10px;
 }
 
-.count-down-title {
-    font-size: 16px;
-    font-weight: 600;
+.count-down-title-config {
+    font-size: 4vmin;
+    font-weight: normal;
     margin-bottom: 20px;
+}
+
+.count-down-title {
+    font-size: 6vmin;
 }
