@@ -76,9 +76,16 @@ export default function App() {
     })
 
     const url = new URL(window.location.href);
+
+    const isCreate = dashboard.state === DashboardState.Create
     /** 是否配置模式下 */
-    const isConfig = dashboard.state === DashboardState.Config
-        || !!url.searchParams.get('isConfig') || dashboard.state === DashboardState.Create;
+    const isConfig = dashboard.state === DashboardState.Config || isCreate;
+
+    console.log('===aa', {
+        isConfig,
+        isCreate,
+        state: dashboard.state
+    })
 
 
     const onUnitChange = (checkedValues: string[]) => {
@@ -110,6 +117,9 @@ export default function App() {
     }
 
     React.useEffect(() => {
+        if (isCreate) {
+            return
+        }
         // 初始化获取配置
         dashboard.getConfig().then(updateConfig);
     }, []);
@@ -128,7 +138,8 @@ export default function App() {
     const onClick = () => {
         // 保存配置
         dashboard.saveConfig({
-            customConfig: config
+            customConfig: config,
+            dataConditions: [],
         } as any)
     }
 
@@ -211,6 +222,7 @@ export default function App() {
                                 className='btn'
                                 size="middle"
                                 type="primary"
+                                autoInsertSpace={false}
                                 onClick={onClick}
                             >
                                 确定
