@@ -81,13 +81,6 @@ export default function App() {
     /** 是否配置模式下 */
     const isConfig = dashboard.state === DashboardState.Config || isCreate;
 
-    console.log('===aa', {
-        isConfig,
-        isCreate,
-        state: dashboard.state
-    })
-
-
     const onUnitChange = (checkedValues: string[]) => {
         setConfig({
             ...config,

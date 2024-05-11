@@ -2,32 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import {
-    createHashRouter,
-    RouterProvider,
-  } from "react-router-dom";
-import Chart from './Chart';
-import Digit from './Digit';
+  createHashRouter,
+  RouterProvider,
+} from "react-router-dom";
 
 const router = createHashRouter([
-    {
-      path: '/',
-      element: <App></App>
-    },
-    {
-      path: '/chart',
-      element: <Chart></Chart>
-    },
-    {
-      path: '/digit',
-      element: <Digit></Digit>
-    },
-  ])
+  {
+    path: '/',
+    element: <App></App>
+  },
+])
 
 const root = ReactDOM.createRoot(
-    document.getElementById('root') as HTMLElement
+  document.getElementById('root') as HTMLElement
 );
 root.render(
-    <React.StrictMode>
-        <RouterProvider router={router}></RouterProvider>
-    </React.StrictMode>
+  <React.StrictMode>
+    <RouterProvider router={router}></RouterProvider>
+  </React.StrictMode>
 );
