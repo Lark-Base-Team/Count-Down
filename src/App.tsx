@@ -4,10 +4,14 @@ import { dashboard, bitable, DashboardState } from "@lark-base-open/js-sdk";
 import { Button, DatePicker, ConfigProvider, Checkbox, Row, Col, GetProp, ColorPicker } from 'antd';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { getTime } from './utils';
+import 'dayjs/locale/zh-cn';
+import 'dayjs/locale/en';
+import { useTheme } from './hooks';
 import dayjs from 'dayjs';
 import enUS from 'antd/locale/en_US';
 import zhCN from 'antd/locale/zh_CN';
 import classnames from 'classnames'
+import { useTranslation } from 'react-i18next';
 
 interface ICountDownConfig {
     color: string;
@@ -22,9 +26,6 @@ const othersConfigKey = [{
 }]
 
 const defaultOthersConfig = ['showTitle']
-
-import 'dayjs/locale/zh-cn';
-import 'dayjs/locale/en';
 
 dayjs.locale('zh-cn');
 
@@ -65,7 +66,8 @@ const defaultUnits = ['sec', 'min', 'hour', 'day']
 
 
 export default function App() {
-
+    const { t } = useTranslation();
+    useTheme();
     const [locale, setLocale] = useState(zhCN);
 
     const [config, setConfig] = useState<ICountDownConfig>({
@@ -141,7 +143,6 @@ export default function App() {
             'main-config': isConfig,
             'main': true,
         })}>
-
             <ConfigProvider locale={locale}>
 
                 <div className='content'>

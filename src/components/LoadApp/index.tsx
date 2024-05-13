@@ -1,6 +1,7 @@
 import { ReactElement, useEffect, useState } from "react"
 import { bitable } from "@lark-base-open/js-sdk"
 import './style.css'
+import '../../locales/i18n';
 
 export default function LoadApp(props: { neverShowBanner?: boolean, children: ReactElement }): ReactElement {
   const [loadErr, setLoadErr] = useState(false)

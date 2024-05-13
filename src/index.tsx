@@ -5,6 +5,7 @@ import {
   createHashRouter,
   RouterProvider,
 } from "react-router-dom";
+import LoadApp from './components/LoadApp';
 
 const router = createHashRouter([
   {
@@ -18,6 +19,8 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router}></RouterProvider>
+    <LoadApp>
+      <RouterProvider router={router}></RouterProvider>
+    </LoadApp>
   </React.StrictMode>
 );
