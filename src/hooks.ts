@@ -3,7 +3,7 @@ import React from "react";
 import { useLayoutEffect } from "react";
 
 function updateTheme(theme: string) {
-  document.documentElement.dataset['theme'] = theme === 'dark' ? 'dark' : 'light';
+  document.body.setAttribute('theme-mode', theme);
 }
 
 export function useTheme() {

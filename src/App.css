@@ -1,7 +1,5 @@
 @import "reset-css";
-html {
-    --text-title: rgba(31, 35, 41, 1);
-}
+
 html,
 body {
     background: transparent !important;
@@ -15,7 +13,7 @@ body {
 .main {
     display: flex;
     box-sizing: border-box;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .main-config {
@@ -48,7 +46,7 @@ body {
 
 .form-item {
     margin-bottom: 16px;
-    color: var(--text-title);
+    color: var(--semi-color-text-0);
 }
 
 .ant-picker {
@@ -60,6 +58,7 @@ body {
 }
 
 .label {
+    color: var(--semi-color-text-0);
     padding-bottom: 8px;
     font-family: PingFang SC;
     font-size: 14px;

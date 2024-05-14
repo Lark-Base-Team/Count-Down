@@ -263,7 +263,7 @@ function Countdown({ config, isConfig, availableUnits, t, targetStr }: ICountdow
     return (
         <div style={{ width: '100vw', textAlign: 'center', overflow: 'hidden' }}>
 
-            {config.othersConfig.includes('showTitle') ? <p className={classnames('count-down-title', {
+            {config.othersConfig.includes('showTitle') ? <p style={{ color }} className={classnames('count-down-title', {
                 'count-down-title-config': isConfig
             })}>
                 {targetStr.replaceAll(/\{\{\s*time\s*\}\}/g, convertTimestamp(target * 1000))}
