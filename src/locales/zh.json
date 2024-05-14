@@ -1,3 +1,16 @@
 {
-  "title":"这是中文标题"
+  "label.set.target": "修改日期和时间：",
+  "second": "秒",
+  "minute": "分",
+  "hour": "小时",
+  "day": "天",
+  "week": "周",
+  "month": "月",
+  "year": "年",
+  "label.unit": "单位",
+  "label.color": "颜色",
+  "confirm": "确定",
+  "please.config": "请点击右上角配置时间",
+  "target.remain": "距离 {{time}} 还剩下",
+  "label.display.time": "展示标题"
 }

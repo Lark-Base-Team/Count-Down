@@ -1,3 +1,15 @@
 {
-  "title":"这是英文标题"
+  "label.set.target": "修改日期和时间：en",
+  "second": "秒en",
+  "minute": "分en",
+  "hour": "小时en",
+  "day": "天en",
+  "week": "周en",
+  "month": "月en",
+  "year": "年en",
+  "label.unit": "单位en",
+  "label.color": "颜色en",
+  "confirm": "确定en",
+  "please.config": "请点击右上角配置时间en",
+  "target.remain": "距离 {{time}} 还剩下"
 }

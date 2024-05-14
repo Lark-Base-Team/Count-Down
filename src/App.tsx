@@ -1,86 +1,92 @@
 import './App.css';
-import React from 'react';
+import React, { useLayoutEffect, useMemo } from 'react';
 import { dashboard, bitable, DashboardState } from "@lark-base-open/js-sdk";
-import { Button, DatePicker, ConfigProvider, Checkbox, Row, Col, GetProp, ColorPicker } from 'antd';
+import { Button, DatePicker, ConfigProvider, Checkbox, Row, Col, Input } from '@douyinfe/semi-ui';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { getTime } from './utils';
+import './locales/i18n';
 import 'dayjs/locale/zh-cn';
 import 'dayjs/locale/en';
-import { useTheme } from './hooks';
+import { useConfig, useTheme } from './hooks';
 import dayjs from 'dayjs';
-import enUS from 'antd/locale/en_US';
-import zhCN from 'antd/locale/zh_CN';
 import classnames from 'classnames'
 import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next/typescript/t';
+
 
 interface ICountDownConfig {
     color: string;
+    /** 毫秒级时间戳 */
     target: number;
     units: string[];
     othersConfig: string[],
+    title: string,
 }
 
-const othersConfigKey = [{
-    key: 'showTitle',
-    title: '展示标题',
-}]
+const othersConfigKey: { key: string, title: string }[] = []
 
 const defaultOthersConfig = ['showTitle']
 
-dayjs.locale('zh-cn');
 
-const availableUnits: { [p: string]: { title: string, unit: number, order: number } } = {
-    sec: {
-        title: '秒',
-        unit: 1,
-        order: 1,
-    },
-    min: {
-        title: '分',
-        unit: 60,
-        order: 2,
-    },
-    hour: {
-        title: '小时',
-        unit: 60 * 60,
-        order: 3,
-    },
-    day: {
-        title: '天',
-        unit: 60 * 60 * 24,
-        order: 4,
-    },
-    week: {
-        title: '周',
-        unit: 60 * 60 * 24 * 7,
-        order: 5,
-    },
-    month: {
-        title: '月',
-        unit: 60 * 60 * 24 * 30,
-        order: 6,
-    },
+const getAvailableUnits: (t: TFunction<"translation", undefined>) => { [p: string]: { title: string, unit: number, order: number } } = (t) => {
+    return {
+        sec: {
+            title: t('second'),
+            unit: 1,
+            order: 1,
+        },
+        min: {
+            title: t('minute'),
+            unit: 60,
+            order: 2,
+        },
+        hour: {
+            title: t('hour'),
+            unit: 60 * 60,
+            order: 3,
+        },
+        day: {
+            title: t('day'),
+            unit: 60 * 60 * 24,
+            order: 4,
+        },
+        week: {
+            title: t('week'),
+            unit: 60 * 60 * 24 * 7,
+            order: 5,
+        },
+        month: {
+            title: t('month'),
+            unit: 60 * 60 * 24 * 30,
+            order: 6,
+        },
+    }
+
 }
 
 const defaultUnits = ['sec', 'min', 'hour', 'day']
 
 
 export default function App() {
-    const { t } = useTranslation();
-    useTheme();
-    const [locale, setLocale] = useState(zhCN);
+    const { t, i18n } = useTranslation();
 
+    useTheme();
+
+    const [title, setTitle] = useState('');
+
+    // 配置
     const [config, setConfig] = useState<ICountDownConfig>({
-        target: dayjs().unix(),
+        target: new Date().getTime(),
         color: '#373C43',
         units: defaultUnits,
+        title: '',
         othersConfig: defaultOthersConfig
     })
 
-    const url = new URL(window.location.href);
+    const availableUnits = useMemo(() => getAvailableUnits(t), [i18n.language])
 
     const isCreate = dashboard.state === DashboardState.Create
-    /** 是否配置模式下 */
+    /** 是否配置/创建模式下 */
     const isConfig = dashboard.state === DashboardState.Config || isCreate;
 
     const onUnitChange = (checkedValues: string[]) => {
@@ -89,16 +95,9 @@ export default function App() {
             units: checkedValues,
         })
     };
-    const changeLang = (lang: 'en-us' | 'zh-cn') => {
-        if (lang === 'zh-cn') {
-            setLocale(zhCN);
-            dayjs.locale('zh-cn');
-        } else {
-            setLocale(enUS);
-            dayjs.locale('en-ud');
-        }
-    }
 
+
+    /** 配置用户配置 */
     const updateConfig = (res: any) => {
         const { customConfig } = res;
         if (customConfig) {
@@ -111,128 +110,128 @@ export default function App() {
 
     }
 
-    React.useEffect(() => {
-        if (isCreate) {
-            return
-        }
-        // 初始化获取配置
-        dashboard.getConfig().then(updateConfig);
-    }, []);
+    useConfig(updateConfig)
 
-
-    React.useEffect(() => {
-        const offConfigChange = dashboard.onConfigChange((r) => {
-            // 监听配置变化，协同修改配置
-            updateConfig(r.data);
-        });
-        return () => {
-            offConfigChange();
-        }
-    }, []);
-
-    const onClick = () => {
-        // 保存配置
+    /**保存配置 */
+    const onSaveConfig = () => {
         dashboard.saveConfig({
             customConfig: config,
             dataConditions: [],
         } as any)
     }
 
+    useLayoutEffect(() => {
+        if (!config?.title) {
+            setTitle(t('target.remain'));
+        }
+    }, [config?.title, t])
+
     return (
         <main className={classnames({
             'main-config': isConfig,
             'main': true,
         })}>
-            <ConfigProvider locale={locale}>
-
-                <div className='content'>
-                    <Countdown
-                        key={config.target}
-                        config={config}
-                        initialTime={0}
-                        isConfig={isConfig}
-                    />
-                </div>
-                {
-                    isConfig && (
-                        <div className='config-panel'>
-                            <div className='form'>
-                                <div className='form-item'>
-                                    <div className='label'>修改日期和时间：</div>
-                                    <DatePicker
-                                        showTime
-                                        value={dayjs.unix(config.target)}
-                                        onChange={(date) => {
-                                            setConfig({
-                                                ...config,
-                                                target: date.unix(),
-                                            })
-                                        }}
-                                    />
-                                </div>
-
-
-                                <div className='form-item'>
-                                    <Checkbox.Group value={config.othersConfig} style={{ width: '100%' }} onChange={(v) => {
+            <div className='content'>
+                <Countdown
+                    targetStr={title}
+                    t={t}
+                    availableUnits={availableUnits}
+                    key={config.target}
+                    config={config}
+                    isConfig={isConfig}
+                />
+            </div>
+            {
+                isConfig && (
+                    <div className='config-panel'>
+                        <div className='form'>
+                            <Item label={t('label.set.target')}>
+                                <DatePicker
+                                    value={config.target}
+                                    type='dateTime'
+                                    onChange={(date: any) => {
                                         setConfig({
                                             ...config,
-                                            othersConfig: v.slice(),
+                                            target: new Date(date).getTime(),
                                         })
-                                    }}>
-                                        <Row className='checkbox-group'>
-                                            {othersConfigKey.map((v) => (
-                                                <Col key={v.key} span={12}>
-                                                    <Checkbox value={v.key}>{v.title}</Checkbox>
-                                                </Col>))}
-                                        </Row>
-                                    </Checkbox.Group>
-                                </div>
-                                <div className='form-item'>
-                                    <div className='label'>单位</div>
-                                    <Checkbox.Group value={config.units} style={{ width: '100%' }} onChange={onUnitChange}>
-                                        <Row className='checkbox-group'>
-                                            {Object.keys(availableUnits).sort((a, b) => availableUnits[b].order - availableUnits[a].order).map((v) => (
-                                                <Col key={v} span={12}>
-                                                    <Checkbox value={v}>{availableUnits[v].title}</Checkbox>
-                                                </Col>))}
-                                        </Row>
-                                    </Checkbox.Group>
+                                    }}
+                                />
+                            </Item>
 
-                                </div>
-
-                                <div className='form-item'>
-                                    <div className='label'>颜色</div>
-                                    <ColorPicker value={config.color} onChange={(v) => {
+                            <Item label={t('label.display.time')}>
+                                <Input
+                                    value={title}
+                                    onChange={(v) => setTitle(v)}
+                                    onBlur={(e) => {
                                         setConfig({
                                             ...config,
-                                            color: v.toHexString(),
+                                            title: e.target.value,
                                         })
                                     }} />
-                                </div>
+                            </Item>
 
-                            </div>
+                            {othersConfigKey.length ? <Item label={''}>
+                                <Checkbox.Group value={config.othersConfig} style={{ width: '100%' }} onChange={(v) => {
+                                    setConfig({
+                                        ...config,
+                                        othersConfig: v.slice(),
+                                    })
+                                }}>
+                                    <Row className='checkbox-group'>
+                                        {othersConfigKey.map((v) => (
+                                            <Col key={v.key} span={12}>
+                                                <Checkbox value={v.key}>{v.title}</Checkbox>
+                                            </Col>))}
+                                    </Row>
+                                </Checkbox.Group>
+                            </Item> : null}
 
-                            <Button
-                                className='btn'
-                                size="middle"
-                                type="primary"
-                                autoInsertSpace={false}
-                                onClick={onClick}
-                            >
-                                确定
-                            </Button>
+                            <Item label={t('label.unit')}>
+                                <Checkbox.Group value={config.units} style={{ width: '100%' }} onChange={onUnitChange}>
+                                    <Row className='checkbox-group'>
+                                        {Object.keys(availableUnits).sort((a, b) => availableUnits[b].order - availableUnits[a].order).map((v) => (
+                                            <Col key={v} span={12}>
+                                                <Checkbox value={v}>{availableUnits[v].title}</Checkbox>
+                                            </Col>))}
+                                    </Row>
+                                </Checkbox.Group>
+                            </Item>
+
+                            <Item label={t("label.color")}>
+                                <Input type='color' value={config.color} onChange={(v) => {
+                                    setConfig({
+                                        ...config,
+                                        color: v,
+                                    })
+                                }} />
+                            </Item>
+
                         </div>
-                    )
-                }
-            </ConfigProvider>
 
+                        <Button
+                            className='btn'
+                            autoInsertSpace={false}
+                            onClick={onSaveConfig}
+                        >
+                            {t('confirm')}
+                        </Button>
+                    </div>
+                )
+            }
         </main>
     )
 }
 
 
-
-function Countdown({ config, initialTime, isConfig }: { config: ICountDownConfig, initialTime: number, isConfig: boolean }) {
+interface ICountdown {
+    config: ICountDownConfig,
+    isConfig: boolean,
+    /** 一个包含{time}的字符串 */
+    targetStr: string,
+    t: TFunction<"translation", undefined>,
+    availableUnits: ReturnType<typeof getAvailableUnits>
+}
+function Countdown({ config, isConfig, availableUnits, t, targetStr }: ICountdown) {
     const { units, target, color } = config
     const [time, setTime] = useState(target ?? 0);
     useEffect(() => {
@@ -249,14 +248,12 @@ function Countdown({ config, initialTime, isConfig }: { config: ICountDownConfig
 
     const timeCount = getTime({ target: target, units: units.map((v) => availableUnits[v]) })
 
-
-
     if (time <= 0) {
         return (
             <div style={{
                 fontSize: 26
             }}>
-                请点击右上角配置时间
+                {t('please.config')}
             </div>
         )
     }
@@ -267,7 +264,7 @@ function Countdown({ config, initialTime, isConfig }: { config: ICountDownConfig
             {config.othersConfig.includes('showTitle') ? <p className={classnames('count-down-title', {
                 'count-down-title-config': isConfig
             })}>
-                距离: {convertTimestamp(target * 1000)} 还有
+                {targetStr.replaceAll(/\{\{\s*time\s*\}\}/g, convertTimestamp(target * 1000))}
             </p> : null}
             <div className='number-container' style={{ color }}>
                 {timeCount.units.sort((a, b) => b.unit - a.unit).map(({ count, title }) => {
@@ -283,7 +280,21 @@ function Countdown({ config, initialTime, isConfig }: { config: ICountDownConfig
 }
 
 function convertTimestamp(timestamp: number) {
-    const date = new Date(timestamp);
-    return dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss')
+    return dayjs(timestamp / 1000).format('YYYY-MM-DD HH:mm:ss')
 }
 
+
+function Item(props: {
+    label?: React.ReactElement | string;
+    children?: React.ReactElement;
+}) {
+
+    if (!props.children && !props.label) {
+        return null
+    }
+
+    return <div className='form-item'>
+        {props.label ? <div className='label'>{props.label}</div> : null}
+        {props.children ? <div>{props.children}</div> : null}
+    </div>
+}

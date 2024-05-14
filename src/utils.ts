@@ -20,7 +20,7 @@ export interface ICountReturn {
 
 export function getTime({ target, units }: ICountProps): ICountReturn {
 
-  const restTime = Math.floor(target - new Date().getTime() / 1000);
+  const restTime = Math.floor((target - new Date().getTime()) / 1000);
 
   if (restTime < 0) {
     return {
