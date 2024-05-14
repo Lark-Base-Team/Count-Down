@@ -1,4 +1,5 @@
 @import "reset-css";
+@import "../node_modules/@semi-bot/semi-theme-universedesign/scss/animation.scss";
 
 html,
 body {
