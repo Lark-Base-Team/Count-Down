@@ -123,6 +123,8 @@ export default function App() {
     useLayoutEffect(() => {
         if (!config?.title) {
             setTitle(t('target.remain'));
+        } else {
+            setTitle(config.title)
         }
     }, [config?.title, t])
 
@@ -210,7 +212,7 @@ export default function App() {
 
                         <Button
                             className='btn'
-                            autoInsertSpace={false}
+                            theme='solid'
                             onClick={onSaveConfig}
                         >
                             {t('confirm')}
