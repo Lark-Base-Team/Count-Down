@@ -6,6 +6,7 @@ function updateTheme(theme: string) {
   document.body.setAttribute('theme-mode', theme);
 }
 
+/** 跟随主题色变化 */
 export function useTheme() {
   useLayoutEffect(() => {
     bitable.bridge.getTheme().then((theme: string) => {

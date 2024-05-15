@@ -72,14 +72,15 @@ export default function App() {
 
     useTheme();
 
+    // 所展示的标题
     const [title, setTitle] = useState('');
 
-    // 配置
+    // create时的默认配置
     const [config, setConfig] = useState<ICountDownConfig>({
         target: new Date().getTime(),
         color: '#373C43',
         units: defaultUnits,
-        title: '',
+        title: t('target.remain'),
         othersConfig: defaultOthersConfig
     })
 
@@ -101,7 +102,8 @@ export default function App() {
     const updateConfig = (res: any) => {
         const { customConfig } = res;
         if (customConfig) {
-            setConfig(customConfig as any)
+            setConfig(customConfig as any);
+            setTitle(customConfig.title);
             setTimeout(() => {
                 // 预留3s给浏览器进行渲染，3s后告知服务端可以进行截图了
                 dashboard.setRendered();
@@ -121,12 +123,10 @@ export default function App() {
     }
 
     useLayoutEffect(() => {
-        if (!config?.title) {
+        if (isCreate) {
             setTitle(t('target.remain'));
-        } else {
-            setTitle(config.title)
         }
-    }, [config?.title, t])
+    }, [t, isCreate])
 
     return (
         <main className={classnames({
