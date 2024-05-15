@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import classnames from 'classnames'
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next/typescript/t';
+import { ColorPicker } from './components/ColorPicker';
 
 
 interface ICountDownConfig {
@@ -78,7 +79,7 @@ export default function App() {
     // create时的默认配置
     const [config, setConfig] = useState<ICountDownConfig>({
         target: new Date().getTime(),
-        color: '#373C43',
+        color: 'var(--ccm-chart-N700)',
         units: defaultUnits,
         title: t('target.remain'),
         othersConfig: defaultOthersConfig
@@ -200,12 +201,12 @@ export default function App() {
                             </Item>
 
                             <Item label={t("label.color")}>
-                                <Input type='color' value={config.color} onChange={(v) => {
+                                <ColorPicker value={config.color} onChange={(v) => {
                                     setConfig({
                                         ...config,
                                         color: v,
                                     })
-                                }} />
+                                }}></ColorPicker>
                             </Item>
 
                         </div>
@@ -260,6 +261,13 @@ function Countdown({ config, isConfig, availableUnits, t, targetStr }: ICountdow
         )
     }
 
+    const numbers = timeCount.units.sort((a, b) => b.unit - a.unit).map(({ count, title }) => {
+        return <div key={title}>
+            <div className='number'>{count}</div>
+            <div className='number-title'>{title} </div>
+        </div>
+    })
+
     return (
         <div style={{ width: '100vw', textAlign: 'center', overflow: 'hidden' }}>
 
@@ -269,12 +277,8 @@ function Countdown({ config, isConfig, availableUnits, t, targetStr }: ICountdow
                 {targetStr.replaceAll(/\{\{\s*time\s*\}\}/g, convertTimestamp(target * 1000))}
             </p> : null}
             <div className='number-container' style={{ color }}>
-                {timeCount.units.sort((a, b) => b.unit - a.unit).map(({ count, title }) => {
-                    return <div key={title}>
-                        <div className='number'>{count}</div>
-                        <div className='number-title'>{title} </div>
-                    </div>
-                })}
+                <div className='number-container-row'>{numbers.slice(0, Math.ceil(numbers.length / 2))}</div>
+                <div className='number-container-row'>{numbers.slice(Math.ceil(numbers.length / 2))}</div>
             </div>
 
         </div>
