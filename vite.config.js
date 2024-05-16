@@ -10,10 +10,10 @@ export default defineConfig({
         react(),
         // npm 使用这个来引入样式
         // SemiPlugin({
-        //     theme: "@semi-bot/semi-theme-test-0515",
+        //     theme: "@semi-bot/semi-theme-feishu-dashboard",
         // }),
 
-        // pnpm必须使用这个
+        // 由于pnpm使用软链方式，所以pnpm需要使用这个插件
         semiTheming({
             theme: "@semi-bot/semi-theme-feishu-dashboard",
         }),

@@ -14,6 +14,8 @@ import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next/typescript/t';
 import { ColorPicker } from './components/ColorPicker';
 
+/** 符合convertTimestamp的日期格式 */
+const titleDateReg = /\d{4}-\d{1,2}-\d{1,2}\s\d+:\d+:\d{1,2}/
 
 interface ICountDownConfig {
     color: string;
@@ -22,6 +24,7 @@ interface ICountDownConfig {
     units: string[];
     othersConfig: string[],
     title: string,
+    showTitle: boolean,
 }
 
 const othersConfigKey: { key: string, title: string }[] = []
@@ -82,6 +85,7 @@ export default function App() {
         color: 'var(--ccm-chart-N700)',
         units: defaultUnits,
         title: t('target.remain'),
+        showTitle: false,
         othersConfig: defaultOthersConfig
     })
 
@@ -150,25 +154,38 @@ export default function App() {
                         <div className='form'>
                             <Item label={t('label.set.target')}>
                                 <DatePicker
+                                    style={{
+                                        width: '100%'
+                                    }}
                                     value={config.target}
                                     type='dateTime'
                                     onChange={(date: any) => {
                                         setConfig({
                                             ...config,
-                                            target: new Date(date).getTime(),
+                                            target: date ? new Date(date).getTime() : new Date().getTime(),
                                         })
                                     }}
                                 />
                             </Item>
 
-                            <Item label={t('label.display.time')}>
+                            <Item label={
+                                <div className='label-checkbox'>
+                                    <Checkbox onChange={(e) => {
+                                        setConfig({
+                                            ...config,
+                                            showTitle: e.target.checked ?? false
+                                        })
+                                    }} defaultChecked={false}></Checkbox>
+                                    {t('label.display.time')}
+                                </div>
+                            }>
                                 <Input
-                                    value={title}
-                                    onChange={(v) => setTitle(v)}
+                                    value={title.replaceAll(/\{\{\s*time\s*\}\}/g, convertTimestamp(config.target * 1000))}
+                                    onChange={(v) => setTitle(v.replace(titleDateReg, '{{time}}'))}
                                     onBlur={(e) => {
                                         setConfig({
                                             ...config,
-                                            title: e.target.value,
+                                            title: e.target.value.replace(convertTimestamp(config.target * 1000), '{{time}}'),
                                         })
                                     }} />
                             </Item>
@@ -271,7 +288,7 @@ function Countdown({ config, isConfig, availableUnits, t, targetStr }: ICountdow
     return (
         <div style={{ width: '100vw', textAlign: 'center', overflow: 'hidden' }}>
 
-            {config.othersConfig.includes('showTitle') ? <p style={{ color }} className={classnames('count-down-title', {
+            {config.showTitle ? <p style={{ color }} className={classnames('count-down-title', {
                 'count-down-title-config': isConfig
             })}>
                 {targetStr.replaceAll(/\{\{\s*time\s*\}\}/g, convertTimestamp(target * 1000))}
@@ -291,8 +308,8 @@ function convertTimestamp(timestamp: number) {
 
 
 function Item(props: {
-    label?: React.ReactElement | string;
-    children?: React.ReactElement;
+    label?: JSX.Element | string;
+    children?: JSX.Element;
 }) {
 
     if (!props.children && !props.label) {
