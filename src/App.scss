@@ -1,6 +1,7 @@
 @import "reset-css";
 
 body[theme-mode="light"] {
+    --divider: rgba(31, 35, 41, 0.15);
     --ccm-chart-B50: #f0f4ff;
     --ccm-chart-B100: #e1eaff;
     --ccm-chart-B200: #bacefd;
@@ -137,6 +138,7 @@ body[theme-mode="light"] {
 }
 
 body[theme-mode="dark"] {
+    --divider: rgba(192, 192, 192, 15);
     --ccm-chart-B50: #151f33;
     --ccm-chart-B100: #192a4c;
     --ccm-chart-B200: #203e78;
@@ -288,7 +290,7 @@ body {
 }
 
 .main-config {
-    border-top: rgba(222, 224, 227, 1) 1px solid;
+    border-top: var(--divider) 0.5px solid;
 }
 
 .content {
@@ -306,7 +308,7 @@ body {
     justify-content: flex-start;
     gap: 20px;
     flex-direction: column;
-    border-left: rgba(222, 224, 227, 1) 1px solid;
+    border-left: var(--divider) 0.5px solid;
     padding: 20px;
     box-sizing: border-box;
 }
