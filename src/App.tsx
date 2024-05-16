@@ -1,4 +1,4 @@
-import './App.css';
+import './App.scss';
 import React, { useLayoutEffect, useMemo } from 'react';
 import { dashboard, bitable, DashboardState } from "@lark-base-open/js-sdk";
 import { Button, DatePicker, ConfigProvider, Checkbox, Row, Col, Input } from '@douyinfe/semi-ui';
