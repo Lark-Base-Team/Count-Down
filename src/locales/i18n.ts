@@ -4,6 +4,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import { bitable } from '@lark-base-open/js-sdk';
 import translationEN from './en.json';
 import translationZH from './zh.json';
+import translationJP from './jp.json';
 
 const resources = {
   zh: {
@@ -12,6 +13,9 @@ const resources = {
   en: {
     translation: translationEN,
   },
+  ja: {
+    translation: translationJP,
+  }
 };
 
 i18n

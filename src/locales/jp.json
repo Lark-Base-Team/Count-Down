@@ -1,0 +1,16 @@
+{
+  "label.set.target": "日付と時間の変更：",
+  "second": "秒",
+  "minute": "分",
+  "hour": "時間",
+  "day": "日",
+  "week": "週",
+  "month": "ヶ月",
+  "year": "年",
+  "label.unit": "単位",
+  "label.color": "色",
+  "confirm": "確定",
+  "please.config": "右上隅をクリックして時間を設定してください",
+  "target.remain": "{{time}} まで残り",
+  "label.display.time": "表示タイトル"
+}
