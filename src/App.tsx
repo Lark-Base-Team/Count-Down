@@ -75,10 +75,6 @@ export default function App() {
     const { t, i18n } = useTranslation();
 
     useTheme();
-
-    // 所展示的标题
-    const [title, setTitle] = useState('');
-
     // create时的默认配置
     const [config, setConfig] = useState<ICountDownConfig>({
         target: new Date().getTime(),
@@ -108,7 +104,6 @@ export default function App() {
         const { customConfig } = res;
         if (customConfig) {
             setConfig(customConfig as any);
-            setTitle(customConfig.title);
             setTimeout(() => {
                 // 预留3s给浏览器进行渲染，3s后告知服务端可以进行截图了
                 dashboard.setRendered();
@@ -127,12 +122,6 @@ export default function App() {
         } as any)
     }
 
-    useLayoutEffect(() => {
-        if (isCreate) {
-            setTitle(t('target.remain'));
-        }
-    }, [t, isCreate])
-
     return (
         <main className={classnames({
             'main-config': isConfig,
@@ -140,7 +129,6 @@ export default function App() {
         })}>
             <div className='content'>
                 <Countdown
-                    targetStr={title}
                     t={t}
                     availableUnits={availableUnits}
                     key={config.target}
@@ -170,18 +158,23 @@ export default function App() {
 
                             <Item label={
                                 <div className='label-checkbox'>
-                                    <Checkbox onChange={(e) => {
-                                        setConfig({
-                                            ...config,
-                                            showTitle: e.target.checked ?? false
-                                        })
-                                    }} defaultChecked={false}></Checkbox>
+                                    <Checkbox
+                                        checked={config.showTitle}
+                                        onChange={(e) => {
+                                            setConfig({
+                                                ...config,
+                                                showTitle: e.target.checked ?? false
+                                            })
+                                        }} ></Checkbox>
                                     {t('label.display.time')}
                                 </div>
                             }>
                                 <Input
-                                    value={title.replaceAll(/\{\{\s*time\s*\}\}/g, convertTimestamp(config.target * 1000))}
-                                    onChange={(v) => setTitle(v.replace(titleDateReg, '{{time}}'))}
+                                    value={config.title.replaceAll(/\{\{\s*time\s*\}\}/g, convertTimestamp(config.target * 1000))}
+                                    onChange={(v) => setConfig({
+                                        ...config,
+                                        title: v.replace(titleDateReg, '{{time}}')
+                                    })}
                                     onBlur={(e) => {
                                         setConfig({
                                             ...config,
@@ -246,13 +239,11 @@ export default function App() {
 interface ICountdown {
     config: ICountDownConfig,
     isConfig: boolean,
-    /** 一个包含{time}的字符串 */
-    targetStr: string,
     t: TFunction<"translation", undefined>,
     availableUnits: ReturnType<typeof getAvailableUnits>
 }
-function Countdown({ config, isConfig, availableUnits, t, targetStr }: ICountdown) {
-    const { units, target, color } = config
+function Countdown({ config, isConfig, availableUnits, t }: ICountdown) {
+    const { units, target, color, title } = config
     const [time, setTime] = useState(target ?? 0);
     useEffect(() => {
         const timer = setInterval(() => {
@@ -280,8 +271,12 @@ function Countdown({ config, isConfig, availableUnits, t, targetStr }: ICountdow
 
     const numbers = timeCount.units.sort((a, b) => b.unit - a.unit).map(({ count, title }) => {
         return <div key={title}>
-            <div className='number'>{count}</div>
-            <div className='number-title'>{title} </div>
+            <div className={classnames('number', {
+                'number-config': isConfig
+            })}>{count}</div>
+            <div className={classnames('number-title', {
+                'number-title-config': isConfig
+            })}>{title} </div>
         </div>
     })
 
@@ -291,7 +286,7 @@ function Countdown({ config, isConfig, availableUnits, t, targetStr }: ICountdow
             {config.showTitle ? <p style={{ color }} className={classnames('count-down-title', {
                 'count-down-title-config': isConfig
             })}>
-                {targetStr.replaceAll(/\{\{\s*time\s*\}\}/g, convertTimestamp(target * 1000))}
+                {title.replaceAll(/\{\{\s*time\s*\}\}/g, convertTimestamp(target * 1000))}
             </p> : null}
             <div className='number-container' style={{ color }}>
                 <div className='number-container-row'>{numbers.slice(0, Math.ceil(numbers.length / 2))}</div>

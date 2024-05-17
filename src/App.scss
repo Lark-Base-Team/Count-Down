@@ -287,10 +287,12 @@ body {
     display: flex;
     box-sizing: border-box;
     min-height: 100vh;
+    --number-gap: 4.2vmax;
 }
 
 .main-config {
     border-top: var(--divider) 0.5px solid;
+    --number-gap: 2.1vmax;
 }
 
 .content {
@@ -345,12 +347,10 @@ body {
     min-width: 80px;
 }
 
-$number-gap: 4.2vmax;
-
 .number-container {
     padding: 0 15px;
     display: flex;
-    gap: $number-gap;
+    gap: var(--number-gap);
     justify-content: center;
     row-gap: 10px;
     flex-wrap: wrap;
@@ -359,7 +359,7 @@ $number-gap: 4.2vmax;
 
 .number-container-row {
     display: flex;
-    gap: $number-gap;
+    gap: var(--number-gap);
 }
 
 .number-container div {
@@ -374,6 +374,10 @@ $number-gap: 4.2vmax;
     text-align: center;
 }
 
+.number-config {
+    font-size: 8vmax;
+}
+
 .number-title {
     font-family: PingFang SC;
     font-size: 3vmax;
@@ -382,15 +386,20 @@ $number-gap: 4.2vmax;
     margin-top: 2vmax;
 }
 
-.count-down-title-config {
-    font-size: 4vmin;
-    font-weight: normal;
-    margin-bottom: 20px;
+.number-title-config {
+    font-size: 1.5vmax;
+    margin-top: 1vmax;
 }
 
 .count-down-title {
     font-size: 3vmax;
     margin-bottom: 1vmax;
+}
+
+.count-down-title-config {
+    font-size: 1.5vmax;
+    font-weight: normal;
+    margin-bottom: 0.5vmax;
 }
 
 .label-checkbox {
