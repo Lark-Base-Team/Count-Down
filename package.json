@@ -32,7 +32,6 @@
     "sass": "^1.77.1",
     "typescript": "^5.4.5",
     "vite": "^5.2.11",
-    "vite-plugin-semi-theme": "^0.5.0",
     "vite-plugin-semi-theming": "^0.1.0"
   }
 }
