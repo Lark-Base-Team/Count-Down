@@ -33,12 +33,7 @@ export default function LoadApp(props: { neverShowBanner?: boolean, children: Re
   const [loadErr, setLoadErr] = useState(false);
   const [locale, setLocale] = useState(en_US);
 
-  const TopBanner = <div>
-    <div className='errTop'>
-      After running the project, please get the webview address and paste it into the Base table "Extended Script" for use. See:&nbsp;
-      <a target='_blank' href='https://bytedance.larkoffice.com/docx/IahqdOrCto2xAKxPV7Oc8gyenfg'>Development Guide</a>
-    </div>
-  </div>
+  const TopBanner = <div></div>
 
   useEffect(() => {
     if (props.neverShowBanner) return;
