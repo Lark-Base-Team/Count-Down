@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import './style.css';
+import './style.scss';
 
 const colors: { value: string }[] = [
   {

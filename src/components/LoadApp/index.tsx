@@ -33,6 +33,7 @@ export default function LoadApp(props: { neverShowBanner?: boolean, children: Re
   const [loadErr, setLoadErr] = useState(false);
   const [locale, setLocale] = useState(en_US);
 
+  /** 通过获取语言超时(3s)来判断当前页面是否在多维表格插件中运行，由于多方面影响，3s判断可能并不准确 */
   const TopBanner = <div></div>
 
   useEffect(() => {

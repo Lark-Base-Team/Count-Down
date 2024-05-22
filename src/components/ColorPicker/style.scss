@@ -1,7 +1,7 @@
 .color-picker {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 4px;
 }
 
 .color-picker-color-container {
@@ -11,7 +11,7 @@
 .color-picker-color {
     width: 18px;
     height: 18px;
-    border: 1px solid white;
+    border: 1px solid var(--bg-body);
     border-radius: 25%;
     cursor: pointer;
     display: flex;
@@ -27,4 +27,8 @@
     border-top: 1px solid transparent;
     border-left: 1px solid transparent;
     transform: rotate(45deg) translate(-1px, -1px);
+}
+
+.semi-datepicker-day-selected .semi-datepicker-day-main {
+    border-radius: 6px;
 }

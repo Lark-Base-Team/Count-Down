@@ -1,6 +1,9 @@
 @import "reset-css";
 
+// 更多tokens变量可以查看https://semi.design/zh-CN/basic/tokens
+
 body[theme-mode="light"] {
+    --bg-body: #fff;
     --divider: rgba(31, 35, 41, 0.15);
     --ccm-chart-B50: #f0f4ff;
     --ccm-chart-B100: #e1eaff;
@@ -138,6 +141,7 @@ body[theme-mode="light"] {
 }
 
 body[theme-mode="dark"] {
+    --bg-body: rgb(26, 26, 26);
     --divider: rgba(207, 207, 207, 0.15);
     --ccm-chart-B50: #151f33;
     --ccm-chart-B100: #192a4c;
@@ -277,133 +281,4 @@ body[theme-mode="dark"] {
 html,
 body {
     background: transparent !important;
-}
-
-.ant-btn-primary {
-    background-color: rgba(20, 86, 240, 1);
-}
-
-.main {
-    display: flex;
-    box-sizing: border-box;
-    min-height: 100vh;
-    --number-gap: 4.2vmax;
-}
-
-.main-config {
-    border-top: var(--divider) 0.5px solid;
-    --number-gap: 2.1vmax;
-}
-
-.content {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 0;
-}
-
-.config-panel {
-    width: 340px;
-    flex: none;
-    display: flex;
-    justify-content: flex-start;
-    gap: 20px;
-    flex-direction: column;
-    border-left: var(--divider) 0.5px solid;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-.form {
-    flex-grow: 1;
-}
-
-.form-item {
-    margin-bottom: 16px;
-    color: var(--semi-color-text-0);
-}
-
-.ant-picker {
-    width: 100%;
-}
-
-.checkbox-group {
-    row-gap: 8px;
-}
-
-.label {
-    color: var(--semi-color-text-0);
-    padding-bottom: 4px;
-    font-family: PingFang SC;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 22px;
-    text-align: left;
-}
-
-.btn {
-    align-self: flex-end;
-    min-width: 80px;
-}
-
-.number-container {
-    padding: 0 15px;
-    display: flex;
-    gap: var(--number-gap);
-    justify-content: center;
-    row-gap: 10px;
-    flex-wrap: wrap;
-    align-content: center;
-}
-
-.number-container-row {
-    display: flex;
-    gap: var(--number-gap);
-}
-
-.number-container div {
-    flex-shrink: 0;
-}
-
-.number {
-    font-family: DIN Alternate;
-    font-size: 16vmax;
-    font-weight: 700;
-    line-height: 1em;
-    text-align: center;
-}
-
-.number-config {
-    font-size: 8vmax;
-}
-
-.number-title {
-    font-family: PingFang SC;
-    font-size: 3vmax;
-    font-weight: 500;
-    text-align: center;
-    margin-top: 2vmax;
-}
-
-.number-title-config {
-    font-size: 1.5vmax;
-    margin-top: 1vmax;
-}
-
-.count-down-title {
-    font-size: 3vmax;
-    margin-bottom: 1vmax;
-}
-
-.count-down-title-config {
-    font-size: 1.5vmax;
-    font-weight: normal;
-    margin-bottom: 0.5vmax;
-}
-
-.label-checkbox {
-    display: flex;
-    gap: 6px;
-    align-items: center;
 }
