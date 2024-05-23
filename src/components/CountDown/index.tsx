@@ -123,8 +123,6 @@ export default function CountDown() {
 
   useConfig(updateConfig)
 
-  console.log('===', window.location.href, config)
-
   return (
     <main className={classnames({
       'main-config': isConfig,

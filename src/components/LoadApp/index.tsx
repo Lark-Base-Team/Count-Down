@@ -8,7 +8,7 @@ import zh_CN from '@douyinfe/semi-ui/lib/es/locale/source/zh_CN';
 import en_US from '@douyinfe/semi-ui/lib/es/locale/source/en_US';
 // import en_GB from '@douyinfe/semi-ui/lib/es/locale/source/en_GB';
 // import ko_KR from '@douyinfe/semi-ui/lib/es/locale/source/ko_KR';
-// import ja_JP from '@douyinfe/semi-ui/lib/es/locale/source/ja_JP';
+import ja_JP from '@douyinfe/semi-ui/lib/es/locale/source/ja_JP';
 // import vi_VN from '@douyinfe/semi-ui/lib/es/locale/source/vi_VN';
 // import ru_RU from '@douyinfe/semi-ui/lib/es/locale/source/ru_RU';
 // import id_ID from '@douyinfe/semi-ui/lib/es/locale/source/id_ID';
@@ -29,38 +29,26 @@ import en_US from '@douyinfe/semi-ui/lib/es/locale/source/en_US';
 
 dayjs.locale('en-us');
 
-export default function LoadApp(props: { neverShowBanner?: boolean, children: ReactElement }): ReactElement {
-  const [loadErr, setLoadErr] = useState(false);
+export default function LoadApp(props: { children: ReactElement }): ReactElement {
   const [locale, setLocale] = useState(en_US);
 
-  /** 通过获取语言超时(3s)来判断当前页面是否在多维表格插件中运行，由于多方面影响，3s判断可能并不准确 */
-  const TopBanner = <div></div>
-
   useEffect(() => {
-    if (props.neverShowBanner) return;
-    const timer = new Promise((resolve, reject) => {
-      setTimeout(() => {
-        reject(false)
-      }, 3000)
-    })
-    Promise.race([bitable.bridge.getLanguage(), timer]).then((v) => {
+    bitable.bridge.getLanguage().then((v) => {
       if (v === 'zh') {
         setLocale(zh_CN);
         dayjs.locale('zh-cn');
       }
-      setLoadErr(false)
-    }).catch(() => {
-      setLoadErr(true)
+
+      if (v === 'ja') {
+        setLocale(ja_JP);
+      }
+
+    }).catch((e) => {
+      console.error(e);
     })
   }, [])
 
-
-  if (props.neverShowBanner) {
-    return props.children || null
-  }
-
   return <div>
-    {loadErr && TopBanner}
     <LocaleProvider locale={locale}>
       {props.children}
     </LocaleProvider>
