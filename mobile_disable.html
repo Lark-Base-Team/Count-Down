@@ -4,6 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body[theme-mode="light"] {
+      color: black;
+    }
+
+    body[theme-mode="dark"] {
+      color: white;
+    }
+  </style>
 </head>
 
 <body>
@@ -15,29 +24,34 @@
   </div>
   <script type="module">
     import { bitable } from 'https://cdn.jsdelivr.net/npm/@lark-base-open/js-sdk@0.4.0/+esm'
-    console.log('===larkBaseOpenjsSdk', bitable);
+
+    function updateTheme(theme) {
+      document.body.setAttribute('theme-mode', theme);
+    }
     const langMap = {
       'zh': '暂不支持展示该类内容',
-      'zh-Hans': '暂不支持展示该类内容',
-      'zh-Hant': '暂不支持展示该类内容',
-      'zh-HK': '暂不支持展示该类内容',
-      'en': 'Content not available for this language',
-      'ja': 'この言語のコンテンツは利用できません',
-      'fr': 'Contenu non disponible pour cette langue',
-      'hi': 'इस भाषा के लिए सामग्री उपलब्ध नहीं है',
-      'id': 'Konten tidak tersedia untuk bahasa ini',
-      'it': 'Contenuto non disponibile per questa lingua',
-      'ko': '이 언어에 대한 콘텐츠를 사용할 수 없습니다',
-      'pt': 'Conteúdo não disponível para este idioma',
-      'ru': 'Содержание недоступно для этого языка',
-      'th': 'เนื้อหาไม่สามารถใช้ได้สำหรับภาษานี้',
-      'vi': 'Nội dung không khả dụng cho ngôn ngữ này',
-      'de': 'Inhalt für diese Sprache nicht verfügbar',
-      'es': 'Contenido no disponible para este idioma'
+      'zh-TW': '暫時不支援顯示此類型的內容',
+      'zh-HK': '暫時不支援顯示此類型的內容',
+      'en': 'Display of this type of content is not currently supported',
+      'ja': 'この種類のコンテンツの表示は現在サポートされていません',
+      'fr': "L'affichage de ce type de contenu n'est actuellement pas pris en charge",
+      'hi': 'इस प्रकार की सामग्री का प्रदर्शन वर्तमान में समर्थित नहीं है',
+      'id': 'Tampilan konten jenis ini saat ini tidak didukung',
+      'it': 'La visualizzazione di questo tipo di contenuto attualmente non è supportata',
+      'ko': '이 유형의 콘텐츠 표시가 현재 지원되지 않습니다',
+      'pt': 'A exibição deste tipo de conteúdo não é atualmente suportada',
+      'ru': 'Отображение этого типа контента в настоящее время не поддерживается',
+      'th': 'การแสดงเนื้อหาประเภทนี้ไม่ได้รับการสนับสนุนในปัจจุบัน',
+      'vi': 'Hiển thị loại nội dung này hiện không được hỗ trợ',
+      'de': 'Die Anzeige dieses Inhalts wird derzeit nicht unterstützt',
+      'es': 'La visualización de este tipo de contenido no está actualmente soportada'
     };
     window.bitable = bitable;
     (async () => {
       const lang = await bitable.bridge.getLanguage();
+      bitable.bridge.getTheme().then((theme) => {
+        updateTheme(theme.toLocaleLowerCase())
+      })
       content.innerText = langMap[lang]
     })();
   </script>
