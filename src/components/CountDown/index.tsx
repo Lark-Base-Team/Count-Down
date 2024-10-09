@@ -69,7 +69,7 @@ const getAvailableUnits: (t: TFunction<"translation", undefined>) => { [p: strin
 const defaultUnits = ['sec', 'min', 'hour', 'day']
 
 /** 倒计时 */
-export default function CountDown() {
+export default function CountDown(props: { bgColor: string }) {
 
   const { t, i18n } = useTranslation();
 
@@ -124,10 +124,7 @@ export default function CountDown() {
   useConfig(updateConfig)
 
   return (
-    <main className={classnames({
-      'main-config': isConfig,
-      'main': true,
-    })}>
+    <main style={{backgroundColor: props.bgColor}} className={classnames({'main-config': isConfig, 'main': true})}>
       <div className='content'>
         <CountdownView
           t={t}

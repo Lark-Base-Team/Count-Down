@@ -1,3 +1,4 @@
+import '@lark-base-open/js-sdk/dist/style/dashboard.css';
 import './App.scss';
 import './locales/i18n';
 import 'dayjs/locale/zh-cn';
@@ -7,6 +8,6 @@ import { useTheme } from './hooks';
 
 
 export default function App() {
-  useTheme();
-  return <CountDown />
+  const { bgColor } = useTheme();
+  return <CountDown bgColor={bgColor}/>
 }
